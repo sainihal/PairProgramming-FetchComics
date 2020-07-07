@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Comics</title>
+    
+</head>
+<body>
+    <script type="text/javascript">
+    window.addEventListener("load",fetchComics)
+    function fetchComics(){
+        fetch("https://xkcd.now.sh/?comic=latest")
+        .then(res => res.json())
+        .then(res => {
+            console.log(res)
+            processComics(res.num)
+            .then(res=>console.log(res))
+            // getComics(res.num)
+            // .then(res=>console.log(res))
+            })      
+    }
+
+    getComics = (num)=>{
+        let promises = []
+        for(let i=0;i<10;i++){
+            promises[i] = fetch(`https://xkcd.now.sh/?comic=${num-i}`).then(res=>res.json())
+        }
+        return Promise.all(promises)
+    }
+
+    processComics = async (num)=>{
+        let promises = []
+        for(let i=0;i<10;i++){
+            try{
+            promises[i] = await fetch(`https://xkcd.now.sh/?comic=${num-i}`).then(res=>res.json())
+            }catch(err){
+                console.log("error",err)
+            }
+        }
+        return promises
+    }
+
+    </script>
+</body>
+</html>
